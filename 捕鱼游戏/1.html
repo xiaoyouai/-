@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>捕鱼游戏</title>
+    <style>
+        body {
+            background: black;
+            text-align: center;
+        }
+        
+        #c1 {
+            background: url(img/game_bg_2_hd.jpg)
+        }
+    </style>
+    <script src="./jquery.js"></script>
+    <script src="./js/resource.js"></script>
+    <script src="./js/Spirit.js"></script>
+    <script src="./js/Fish.js"></script>
+    <script src="./js/Cannon.js"></script>
+    <script src="./js/Bullet.js"></script>
+    <script src="./js/Button.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js//Coin.js"></script>
+    <script>
+        window.onload = async function() {
+            let oc = $('#c1')[0];
+            let gd = oc.getContext('2d');
+            try {
+                await loadResources(); //加载img文件夹中各个json的信息
+            } catch (e) {
+                alert('加载失败，请刷新重试');
+            }
+
+            let data_bar = _g_resouce['bottom'].bottom_bar;
+            let bottom_bar = new Spirit({ //炮台底座
+                img: data_bar.img,
+                w: data_bar.w,
+                h: data_bar.h,
+                sx: data_bar.sx,
+                sy: data_bar.sy,
+                x: 400,
+                y: 590
+            })
+
+            let cannon = new Cannon(1); //炮
+            cannon.x = 442;
+            cannon.y = 572;
+
+            oc.onmousemove = function(ev) { //炮跟着鼠标转
+                let x = ev.offsetX - cannon.x;
+                let y = ev.offsetY - cannon.x;
+                cannon.rotation = Math.atan2(y, x) * 180 / Math.PI + 90; //atan2默认右边是0，但是炮弹默认的摆放是向上，所以+90
+            }
+
+            let bullets = [];
+            let last_fire = 0;
+            let firing = false;
+            oc.onclick = function(ev) { //点击开炮
+                let now = Date.now();
+                if (now - last_fire < 700) {
+                    return;
+                }
+                last_fire = now;
+                firing = true;
+                let bullet = new Bullet(cannon.type);
+                bullet.x = cannon.x;
+                bullet.y = cannon.y;
+                bullet.rotation = cannon.rotation;
+
+                bullets.push(bullet);
+            }
+
+            let btnMinus = new Button(_g_resouce['bottom'].cannon_minus, _g_resouce['bottom'].cannon_minus_down); //炮-按钮-
+            let btnPlus = new Button(_g_resouce['bottom'].cannon_plus, _g_resouce['bottom'].cannon_plus_down) //炮-按钮+
+            btnMinus.x = 442 - 60;
+            btnMinus.y = 580;
+            btnPlus.x = 442 + 60;
+            btnPlus.y = 580;
+
+            oc.onmousedown = function(ev) {
+                let minus = false;
+                let plus = false;
+                if (btnMinus.checkDown(ev.offsetX, ev.offsetY)) {
+                    minus = true;
+                }
+                if (btnPlus.checkDown(ev.offsetX, ev.offsetY)) {
+                    plus = true;
+                }
+                if (minus && cannon.type > 1) {
+                    cannon.setType(cannon.type - 1);
+                    cannon.draw(gd);
+                }
+                if (plus && cannon.type < 7) {
+                    cannon.setType(cannon.type + 1);
+                    cannon.draw(gd);
+                }
+            }
+            oc.onmouseup = function(ev) {
+                btnMinus.checkUp(ev.offsetX, ev.offsetY);
+                btnPlus.checkUp(ev.offsetX, ev.offsetY);
+            }
+
+            let fishs = [];
+            setInterval(function() {
+                if (Math.random() < 0.1) {
+                    let fish = new Fish(rndInt(1, 4));
+                    if (Math.random() < 0.5) {
+                        fish.x = -100; //从左边出来
+                        fish.y = rndInt(0, oc.height);
+                        fish.rotation = rndInt(70, 110);
+                    } else {
+                        fish.x = oc.width + 100; //从右边出来
+                        fish.y = rndInt(0, oc.height);
+                        fish.rotation = rndInt(-110, 70);
+                        fish.scaleY = -1;
+                    }
+                    fishs.push(fish);
+                }
+            }, 10)
+
+            let coins = [];
+            let coinDisappear = {};
+            requestAnimationFrame(next);
+
+            function next() {
+                // 1.清除
+                gd.clearRect(0, 0, oc.width, oc.height)
+                    //2.移动
+                if (firing) {
+                    if (true === cannon.nextFrame())
+                        firing = false;
+                }
+                bullets.forEach(bullet => bullet.move());
+                fishs.forEach(fish => fish.move());
+                bullets = bullets.filter(bullet => !bullet.outOfCanvas(oc.width, oc.height));
+                fishs = fishs.filter(fish => !fish.outOfCanvas(oc.width, oc.height));
+
+                //3.检测碰撞
+                fishs.forEach((fish, index) => {
+                    bullets.forEach((bullet, b_index) => {
+                        if (fish.collTest(bullet)) {
+                            //让炮弹消失
+                            bullets.splice(b_index, 1);
+                            fishs.splice(index, 1);
+                            let coin = new Coin(2);
+                            coins.push(coin);
+                            coinDisappear[coin] = Date.now(); //金币出现时间存入
+                            coin.x = fish.x;
+                            coin.y = fish.y;
+                            return;
+                        }
+                    })
+                })
+
+
+                // 4.绘制
+                bottom_bar.draw(gd);
+                bullets.forEach(bullet => bullet.draw(gd));
+                fishs.forEach(fish => fish.draw(gd));
+                fishs.forEach(fish => fish.nextFrame(gd));
+                coins.forEach(coin => coin.draw(gd));
+                coins.forEach(coin => coin.nextFrame(gd));
+                coins.forEach((coin, index) => {
+                    if (Date.now() - coinDisappear[coin] > 3000) {
+                        console.log(Date.now(), coinDisappear[coin]);
+                        coins.splice(index, 1);
+                    }
+                });
+
+                cannon.draw(gd);
+                btnMinus.draw(gd);
+                btnPlus.draw(gd);
+                requestAnimationFrame(next);
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>

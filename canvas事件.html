@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>canvas事件</title>
+    <style>
+        body {
+            background-color: black;
+        }
+        
+        #c1,
+        #c2 {
+            background-color: #fff;
+        }
+    </style>
+    <script>
+        function dtoa(n) {
+            return n * Math.PI / 180;
+        } //角度转弧度
+        function atod(n) {
+            n * 180 / Math.PI;
+        }
+
+        window.onload = function() {
+            let oc1 = document.getElementById('c1');
+            let gd1 = oc1.getContext('2d');
+            gd1.strokeRect(100, 100, 200, 150);
+            oc1.onmousemove = function(ev) {
+                let l = 100,
+                    t = 100,
+                    r = l + 200,
+                    b = t + 150;
+                // 方法一：
+                // let x = ev.clientX - oc1.offsetLeft,
+                //     y = ev.clientY - oc1.offsetTop;
+                // 方法二：
+                let x = ev.offsetX,
+                    y = ev.offsetY;
+                gd1.clearRect(0, 0, oc1.width, oc1.height);
+                if (l <= x && x <= r && t <= y && y <= b) { //鼠标在方框里面
+                    gd1.strokeStyle = 'red';
+                } else {
+                    gd1.strokeStyle = 'black';
+                }
+                gd1.strokeRect(100, 100, 200, 150);
+            };
+
+            let oc2 = document.getElementById('c2');
+            let gd2 = oc2.getContext('2d');
+            let cx = 160,
+                cy = 160,
+                r = 150;
+            gd2.beginPath();
+            gd2.arc(cx, cy, r, dtoa(0), dtoa(360), true); //true代表是否是逆时针
+            gd2.stroke();
+
+            oc2.onmousemove = function(ev) {
+                let x = ev.offsetX,
+                    y = ev.offsetY;
+                let dis = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2)); //比较鼠标点到半径的距离
+                gd2.strokeStyle = dis <= r ? 'red' : 'black';
+                gd2.beginPath();
+                gd2.arc(cx, cy, r, dtoa(0), dtoa(360), true);
+                gd2.stroke();
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <!--矩形-->
+    <canvas id="c1" width="400" height="400"></canvas>
+    <!--圆形-->
+    <canvas id="c2" width="400" height="400"></canvas>
+
+</body>
+
+</html>

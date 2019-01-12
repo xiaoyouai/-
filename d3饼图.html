@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>d3饼图例子</title>
+    <style></style>
+    <script src="./d3.js"></script>
+    <script>
+        window.onload = function() {
+            let data = [{
+                name: "1月",
+                data: 124,
+                color: 'pink'
+            }, {
+                name: "2月",
+                data: 156,
+                color: 'orange'
+
+            }, {
+                name: "3月",
+                data: 135,
+                color: 'green'
+
+            }, {
+                name: "4月",
+                data: 178,
+                color: 'blue'
+
+            }];
+
+            //gen1  数据转变成角度---不同数据有不同的statrAngle和endAngle
+            let pieGen = d3.pie()
+                .value(json => json.data) //将data作为value的值
+                .sort((j1, j2) => 0) //维持原来的顺序，设置这个是因为.pie()会自动根据大小排序
+                .padAngle(() => {
+                    return 10 * Math.PI / 180; //圆弧间隙
+                });
+
+            //gen2  角度转变成弧
+            let arcGen = d3.arc().innerRadius(50) //内径
+                .outerRadius(230) //外径
+                .cornerRadius(5); //圆弧的边角
+
+            let g = d3.select("body").append("svg").attr("width", 800).attr("height", 600).append("g"); //把一堆图形放在一组里，分组
+
+            let pieRes = pieGen(data);
+
+            pieRes.forEach(pieData => {
+                let arcRes = arcGen(pieData);
+                g.append("path").attr("d", arcRes).attr('fill', pieData.data.color)
+            });
+            g.attr("transform", "translate(400,300)");
+        };
+    </script>
+</head>
+
+<body></body>
+
+</html>

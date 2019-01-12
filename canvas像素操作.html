@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>canvas像素操作</title>
+    <style></style>
+    <script>
+        window.onload = function() {
+            let oc = document.getElementById('c1');
+            let gd = oc.getContext('2d');
+
+            let oImg = new Image();
+            oImg.src = 'http://127.0.0.1/openclass/图形/2.jpg';
+            oImg.onload = function() {
+                let w = oc.width,
+                    h = oc.height;
+
+                gd.drawImage(oImg, 0, 0);
+                let imgdata = gd.getImageData(0, 0, w, h);
+                //imgdata.data是一个大数组，里面存储了图片每一个像素的颜色信息,一行有多长，那么就有多少个像素,一个像素占4位，所以*4
+                for (let r = 0; r < h; r++) {
+                    for (let c = 0; c < w; c++) {
+                        // (r * w + c) * 4+0  =>  r
+                        // (r * w + c) * 4+1  =>  g
+                        // (r * w + c) * 4+2  =>  b
+                        // (r * w + c) * 4+3  =>  a
+                        imgdata.data[(r * w + c) * 4 + 2] = 0; //黄色就是要把蓝去掉
+
+                        // imgdata.data[(r * w + c) * 4 + 0] = imgdata.data[(r * w + c) * 4 + 1] = imgdata.data[(r * w + c) * 4 + 2] = 2 * (imgdata.data[(r * w + c) * 4 + 0] + imgdata.data[(r * w + c) * 4 + 1] + imgdata.data[(r * w + c) * 4 + 2]) / 3; // 灰色就是r=g=b，变亮就是颜色值高，所以*2
+
+                    }
+                }
+                gd.putImageData(imgdata, 0, 0);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>

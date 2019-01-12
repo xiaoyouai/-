@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>canvas例子1</title>
+    <style>
+        body {
+            background-color: black;
+            text-align: center;
+        }
+        
+        #c1 {
+            background: #FFF;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            let oc = document.getElementById('c1');
+            let gd = oc.getContext('2d');
+
+            // 字
+            gd.font = '40px 宋体';
+            gd.strokeText('hello', 400, 80); //(400,80)为原点到文字左下角的左边
+
+            //线
+            gd.beginPath();
+            gd.moveTo(0, 0);
+            gd.lineTo(50, 50);
+            gd.strokeStyle = 'red';
+            gd.stroke();
+
+            gd.beginPath(); //清除之前画的路径，重新开始新的路径，不加这个上面那条线会被叠加下面的线
+            gd.moveTo(50, 0);
+            gd.lineTo(60, 60);
+            gd.strokeStyle = 'yellow';
+            gd.stroke();
+
+            // 矩形
+            gd.rect(0, 110, 100, 100);
+            gd.stroke();
+            gd.strokeStyle = 'red';
+            gd.lineWidth = 10; //向内15，向外15
+            gd.strokeRect(110, 0, 100, 100);
+
+            gd.fillStyle = "green";
+            gd.fillRect(110, 0, 100, 100);
+
+
+
+            // canvas动起来方法一：
+            let left = 230;
+            gd.lineWidth = 1;
+            gd.strokeStyle = 'black';
+            gd.strokeRect(left, 100, 200, 150);
+
+            setInterval(function() {
+                gd.strokeStyle = 'black';
+                gd.clearRect(left - 10, 100 - 10, 200 + 100, 150 + 100); //线的长度内外都延伸了所以只有设置大一点才能擦除前面的轨迹
+
+                left += 5;
+                gd.strokeRect(left, 100, 200, 150);
+            }, 1000)
+
+            // canvas动起来方法二：
+            let left2 = 100;
+            gd.strokeStyle = 'pink';
+
+            function next() {
+                gd.clearRect(left2 - 10, 300 - 10, 200 + 100, 150 + 100);
+                left2 += 5;
+
+                gd.strokeRect(left2, 300, 200, 150);
+                requestAnimationFrame(next);
+            }
+            requestAnimationFrame(next);
+        }
+    </script>
+</head>
+
+<body>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>

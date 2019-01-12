@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>canvas视频滤镜---对大文件会不流畅</title>
+    <style>
+        body {
+            background-color: black;
+        }
+        
+        #c1 {
+            background-color: #fff;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            let oc = document.getElementById('c1');
+            let gd = oc.getContext('2d');
+            let ov = document.getElementById('v1');
+            let h = oc.height;
+            let w = oc.width;
+
+            function next() {
+                gd.drawImage(ov, 0, 0); //一次只有一帧，所以要通过动画保证播放一下画一下
+                let imgdata = gd.getImageData(0, 0, w, h);
+                let data = imgdata.data;
+                for (let r = 0; r < h; r++) {
+                    for (let c = 0; c < w; c++) {
+                        data[(r * w + c) * 4 + 2] = 0; //黄色
+                    }
+                }
+                gd.putImageData(imgdata, 0, 0);
+                requestAnimationFrame(next);
+            }
+            requestAnimationFrame(next);
+        }
+    </script>
+</head>
+
+<body>
+    <video muted src="./movie.mp4" id="v1" autoplay loop></video>
+    <canvas id="c1" width="800" height="600"></canvas>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>canvas变换</title>
+    <style></style>
+    <script>
+        window.onload = function() {
+            let oc = document.getElementById("c1");
+            let gd = oc.getContext("2d");
+            let rot1 = {
+                x: 100,
+                y: 100,
+                w: 200,
+                h: 150,
+                r: 0
+            };
+            let rot2 = {
+                x: 140,
+                y: 160,
+                w: 100,
+                h: 100,
+                r: 0
+            };
+
+            function next() {
+                gd.clearRect(0, 0, oc.width, oc.height);
+                rot1.r++;
+                rot2.r++;
+                myrot(rot1.x, rot1.y, rot1.w, rot1.h, rot1.r);
+                myrot(rot2.x, rot2.y, rot2.w, rot2.h, rot2.r);
+                requestAnimationFrame(next);
+            }
+            requestAnimationFrame(next);
+
+            function myrot(x, y, w, h, r) {
+                gd.save(); //保存canvas的状态（包括颜色、translate/rotate...，不包括图片），之所以要用到这个，是因为translate会叠加(tr两个100=tr200)，所以要解决这一问题
+
+                // canvas变换是以(0,0)为原点的，要想换到以矩形中间为原点，只有把矩形中间换到（0,0）去(那么原点的x位置为x-(x+w/2))，然后转了位置，然后再移回原处(原先移动了x+w/2，现在就要移回来这么多)
+                gd.translate(w / 2 + x, h / 2 + y);
+                gd.rotate((r * Math.PI) / 180); //执行时，先rotate再translate
+
+                gd.strokeRect(-w / 2, -h / 2, w, h);
+
+                gd.restore(); //恢复到上一次保存的状态；
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>

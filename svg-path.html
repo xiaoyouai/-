@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>svg-path</title>
+    <style></style>
+    <script>
+        function d2a(n) {
+            return n * Math.PI / 180;
+        }
+        window.onload = function() {
+            let op = document.getElementById('p1');
+            let cx = 200,
+                cy = 200,
+                r = 200;
+            let ang1 = 20,
+                ang2 = 60,
+                arr = [];
+
+            function getPoint(ang) {
+                return {
+                    x: cx + Math.sin(d2a(ang)) * r,
+                    y: cy - Math.cos(d2a(ang)) * r,
+
+                }
+            }
+            // 画第一条线
+            let {
+                x: x1,
+                y: y1
+            } = getPoint(ang1);
+            arr.push(`M ${cx} ${cy} L ${x1} ${y1}`);
+
+            let {
+                x: x2,
+                y: y2
+            } = getPoint(ang2);
+            // 画第2条线  rx   ry  x旋转  大弧             镜像  终点x,y
+            arr.push(`A  ${r} ${r} 0 ${ang2-ang1<=180?0:1} 1  ${x2} ${y2}`); //大弧取0时体现为小弧形(角度在180内)，大弧取1时体现为大弧形（角度在180外）
+
+            // 画第3条线
+            arr.push('Z'); //闭合
+            op.setAttribute('d', arr.join(' '));
+        }
+    </script>
+</head>
+
+<body>
+    <svg width="800" height="600">
+        <!-- L 30 30 20 50 40 10等同于L 30 30 L 20 50 L 40 10 -->
+        <!-- y -->
+        <path d="M 0 1 L 30 30 20 50 40 10" style="stroke:red;fill:none"></path>
+        <!-- 桥形 -->
+        <path d="M 100 300 L200 300 A 100 100 0 0 0 400 300 L 500 300" style="stroke:red;fill:none"></path>
+        <!-- 扇形-->
+        <path id="p1" d="" style="stroke:red;fill:none"></path>
+        <!-- 贝塞尔曲线 -->
+        <path  d="M 100 650 Q 300 450 400 650" style="stroke:red;fill:none"></path>
+
+    </svg>
+</body>
+
+</html>

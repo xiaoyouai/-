@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>canvas饼图</title>
+    <style>
+        body {
+            background-color: black;
+            text-align: center;
+        }
+        
+        #c1 {
+            background: #FFF;
+        }
+    </style>
+    <script>
+        function dtoa(n) {
+            return n * Math.PI / 180;
+        } //角度转弧度
+        function atod(n) {
+            n * 180 / Math.PI;
+        }
+
+        window.onload = function() {
+            let oc = document.getElementById('c1');
+            let gd = oc.getContext('2d');
+            let cx = 400,
+                cy = 300,
+                r = 200;
+            let datas = [{
+                data: 150,
+                color: '#FC0'
+            }, {
+                data: 350,
+                color: '#CF0'
+            }, {
+                data: 100,
+                color: '#0FC'
+            }];
+
+            function pie(startAng, endAng, color, data) {
+                let x = cx + Math.cos(dtoa(startAng)) * r;
+                let y = cy + Math.sin(dtoa(startAng)) * r;
+
+                console.log(x, y);
+                console.log(dtoa(endAng) - dtoa(startAng));
+                gd.beginPath();
+
+                // 第一条线,直线
+                gd.moveTo(cx, cy);
+                gd.lineTo(x, y);
+
+                // 第二条线，画一个弧
+                gd.arc(cx, cy, r, dtoa(startAng), dtoa(endAng), false);
+
+                // 第三条线，把图形闭合即可
+                gd.closePath();
+
+                gd.fillStyle = color;
+                gd.fill();
+
+                // 该方法仅对该数值有用，其他的数值文字位置会不对
+                let x2, y2;
+                if ((dtoa(endAng) - dtoa(startAng)) < 1.5707963267948966) {
+                    x2 = x; //是锐角就等于x
+                } else {
+                    x2 = x - r / 4;
+                }
+                y2 = y > cy ? y - cy / 3 : y + cy / 3;
+                console.log(x2, y2, 'rrrr');
+                gd.strokeText(data, x2, y2);
+            }
+
+            let sum = 0;
+            datas.forEach(data => {
+                sum += data.data;
+            })
+            let now = 0;
+            datas.forEach(data => {
+                let ang = 360 * data.data / sum;
+                pie(now, now + ang, data.color, data.data);
+                now += ang;
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>

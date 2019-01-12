@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>d3例子</title>
+    <style></style>
+    <script src="./d3.js"></script>
+    <script>
+        window.onload = function() {
+            // let odiv = d3.select('body').append('div')
+            //     .style('width', 800)
+            //     .style('height', 800)
+            //     .style('background', '#ccc')
+
+            // d3.select('body').append('svg')
+            //     .attr('width', 800)
+            //     .attr('height', 600)
+            //     .append('path')
+            //     .attr('d', 'M 100 100 L 400 100 400 300 100 300 Z')
+            //     .attr('stroke', 'black')
+            //     .attr('fill', 'none');
+
+            let datas = [{
+                name: '1月',
+                value: 2180
+            }, {
+                name: '2月',
+                value: 1750
+            }, {
+                name: '3月',
+                value: 968
+            }, {
+                name: '4月',
+                value: 3560
+            }];
+
+            //求和-》每个数值
+            //创建generator---生成器
+            let line = d3.line()
+                .x(json => parseInt(json.name) * 50)
+                //x过滤器，告诉他去哪儿找X轴数据
+                .y(json => json.value / 100) //x过滤器，告诉他去哪儿找X轴数据
+
+            //调用generator---生成器
+            let res = line(datas);
+
+            //显示
+            d3.select('body').append('svg').attr('height', 600).attr('width', 800).append('path').attr('d', res).attr('stroke', 'black').attr('fill', 'none');
+
+            //arrays:数组操作
+            console.log(d3.max([1, 2, 3, 4, 5])); //最大值
+            console.log(d3.min([1, 2, 3, 4, 5])); //最小值
+            console.log(d3.extent([1, 2, 3, 4, 5])); //范围
+
+            //color：颜色处理
+            console.log(d3.color('rgb(255,16,34)')); //解析颜色值
+            console.log(d3.color('pink')); //解析颜色值
+
+            //collections--提供了数据结构map...
+            let set = d3.set([{
+                name: 'blll',
+                age: 18
+            }, {
+                name: 'alex',
+                age: 20
+            }, {
+                name: 'gg',
+                age: 21
+            }], json => json.name); //表示把name转换成key
+            console.log(set.has('gg'));
+
+            let map = d3.map([{
+                name: 'blll',
+                age: 18
+            }, {
+                name: 'alex',
+                age: 20
+            }, {
+                name: 'gg',
+                age: 21
+            }], json => json.name); //表示把name转换成key
+            console.log(map.get('gg'));
+
+            //random Numbers：随机数生成器
+            console.log(d3.randomUniform(20, 60)()); //20-60间的随机数,各个数字出现的概率相同
+            console.log(d3.randomNormal(15)()); //正态分布,参数为中值
+
+            // let gen = d3.randomUniform(20, 60);
+            let gen = d3.randomNormal(15);
+
+            let arr = [];
+            for (let i = 0; i < 1000; i++) {
+                let n = Math.round(gen());
+                if (!arr[n]) {
+                    arr[n] = 1;
+                } else {
+                    arr[n]++;
+                }
+            }
+            console.log(arr);
+
+            //Queues 异步任务队列
+            d3.queue()
+                .defer((a, b, cb) => { //延迟，装异步操作，cb为回调函数，相当于resolve
+                    setTimeout(() => {
+                        cb(null, a + b);
+                    }, Math.floor(Math.random() * 4000));
+                }, 12, 5)
+                .defer((a, b, cb) => {
+                    setTimeout(() => {
+                        cb(null, a / b);
+                    }, Math.floor(Math.random() * 4000));
+                }, 12, 5)
+                .await((err, res1, res2) => {
+                    if (err) {
+                        console.log("错了");
+                    } else {
+                        console.log(res1, res2);
+                    }
+                });
+
+            // Number Formats 数字格式化
+            // let gen=d3.format("f");//浮点数
+            let gen2 = d3.format("08.3f"); //加上小数点一个8位，小数点后面3位   浮点数
+
+            console.log(gen2(73));
+
+            // Time Formats 时间日期格式化
+            let gen3 = d3.timeFormat('%Y-%m-%d');
+            let t = Date.now();
+            console.log(gen3(t));
+            // Timers 定时器
+
+            // Dispatches:事件分发---构建自己的事件处理管道
+            let ev = d3.dispatch('msg', 'xxx');
+            ev.on('msg', (a, b, c) => { //监听,msg为事件名
+                console.log("事件被触发了", a, b, c);
+            })
+            ev.call('msg', 5, 1, 2, 3) //触发事件，5表示事件源
+                // Interpolators 差值计算
+
+
+        };
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

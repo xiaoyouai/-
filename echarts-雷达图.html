@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>echarts-雷达图</title>
+    <style>
+        .box {
+            width: 800px;
+            height: 600px;
+            border: 1px solid black;
+            margin: 10px auto 0;
+        }
+    </style>
+    <script src="./echarts.js"></script>
+    <script>
+        window.onload = function() {
+            let obox = document.getElementById('box1');
+
+            let option = {
+                'title': {
+                    'text': '人物属性'
+                },
+                'legend': {
+                    data: ['张三', '李四'],
+                    right: 0,
+                    top: '50%',
+                    orient: 'vertical'
+                },
+                radar: {
+                    indicator: [{
+                        name: 'HP',
+                        max: 9000
+                    }, {
+                        name: '攻击力',
+                        max: 99
+                    }, {
+                        name: '防御力',
+                        max: 99
+                    }, {
+                        name: '幸运值',
+                        max: 99
+                    }, {
+                        name: '体力',
+                        max: 99
+                    }]
+                },
+                series: [{
+                    name: '属性',
+                    type: 'radar',
+                    data: [{
+                        name: '张三1',
+                        value: [9000, 90, 90, 90, 20]
+                    }, {
+                        name: '张三22',
+                        value: [5000, 70, 46, 10, 28]
+                    }, {
+                        name: '张三33',
+                        value: [500, 60, 40, 29, 90]
+                    }, ]
+                }]
+            }
+
+            let chart = echarts.init(obox);
+            chart.setOption(option);
+        }
+    </script>
+</head>
+
+<body>
+    <div class="box" id="box1"></div>
+</body>
+
+</html>

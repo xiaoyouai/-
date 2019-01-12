@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>svg动画</title>
+    <style></style>
+    <script>
+        window.onload = function() {
+            let osvg = document.getElementById('svg');
+            let ol1 = document.getElementById('l1');
+            let start = parseInt(ol1.getAttribute('x1'));
+            let end = 400;
+            let dis = end - start;
+            ol1.onmouseover = function() {
+                let count = 0;
+
+                function next() {
+                    count++;
+                    let a = 1 - count / 200;
+                    let cur = start + dis * (1 - a * a * a); //加速运动，减速为a=1-count/100,dis*(1-a*a*a)
+                    ol1.setAttribute('x1', cur);
+                    if (count < 200) {
+                        requestAnimationFrame(next);
+                    }
+                }
+                requestAnimationFrame(next);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <svg id="svg1" width="800" height="600">
+        <line id="l1" x1="100" y1="100" x2="400" y2="300" style="stroke:pink;stroke-width:20"></line>
+    </svg>
+
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:v="urn:schemas-microsoft-com:vml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>vml创建元素</title>
+    <style>
+        v\:* {
+            behavior: url (#default#VML);
+            display: block;
+        }
+        /* 添加一组浏览器行为 */
+    </style>
+    <script>
+        window.onload = function() {
+            var obtn = document.getElementById('btn1');
+            obtn.onclick = function() {
+                var oshape = document.createElement('v:shape');
+                oshape.style.width = '1000px';
+                oshape.style.height = '1000px';
+
+                oshape.path = "M 100 100 L 300 500 400 100 X";
+                oshape.strokecolor = "red";
+                document.body.appendChild(oshape);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <input type="button" value="创建" id="btn1">
+</body>
+
+</html>

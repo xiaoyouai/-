@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>canva服务器下载</title>
+    <style></style>
+    <script src="./jquery.js"></script>
+    <script>
+        window.onload = function() {
+            let oc = document.getElementById('c1');
+            let gd = oc.getContext('2d');
+
+            let oImg = new Image();
+            oImg.src = 'http://localhost:8088/2.jpg';
+            oImg.onload = function() {
+                let w = oc.width,
+                    h = oc.height;
+
+                gd.drawImage(oImg, 0, 0);
+                let imgdata = gd.getImageData(0, 0, w, h);
+                for (let r = 0; r < h; r++) {
+                    for (let c = 0; c < w; c++) {
+                        imgdata.data[(r * w + c) * 4 + 2] = 0; //黄色
+                    }
+                }
+                gd.putImageData(imgdata, 0, 0);
+            }
+
+            let obtn = document.getElementById('btn1');
+            obtn.onclick = function() {
+                let str = oc.toDataURL(); //str为base64
+                document.getElementById("col1").value = str;
+                document.getElementById("form1").submit();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <!--先发给服务器，再下载-->
+    <form action="http://localhost:8088/upload_base64" method="post" id="form1" style="display:none">
+        <textarea name="col" id="col1" cols="80" rows="8"></textarea>
+    </form>
+    <input type="button" value="下载图片" id="btn1"><br>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>

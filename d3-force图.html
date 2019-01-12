@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>d3-force图（力图）</title>
+    <style></style>
+    <script src="./d3.js"></script>
+    <script>
+        window.onload = function() {
+            let oc = document.getElementById('c1');
+            let gd = oc.getContext('2d');
+            let w = oc.width,
+                h = oc.height;
+            let mynodes = [{
+                name: 'china',
+                title: '全国'
+            }, {
+                name: 'gd',
+                title: '广东'
+            }, {
+                name: 'gd-gz',
+                title: '广州'
+            }, {
+                name: 'gd-sh',
+                title: '深圳'
+            }, {
+                name: 'gd-ss',
+                title: '韶山'
+            }, {
+                name: 'hn',
+                title: '湖南'
+            }, {
+                name: 'hn-cs',
+                title: '长沙'
+            }, {
+                name: 'hn-sy',
+                title: '邵阳'
+            }, {
+                name: 'bj',
+                title: '北京'
+            }, ];
+            let mylinks = [{
+                source: 'gd',
+                target: 'china',
+                dis: 400
+            }, {
+                source: 'gd-gz',
+                target: 'gd',
+                dis: 50
+            }, {
+                source: 'gd-sh',
+                target: 'gd',
+                dis: 50
+            }, {
+                source: 'gd-ss',
+                target: 'gd',
+                dis: 50
+            }, {
+                source: 'hn',
+                target: 'china',
+                dis: 400
+            }, {
+                source: 'hn-cs',
+                target: 'hn',
+                dis: 50
+            }, {
+                source: 'hn-sy',
+                target: 'hn',
+                dis: 50
+            }, {
+                source: 'bj',
+                target: 'china',
+                dis: 400
+            }]
+
+            let linkForce = d3.forceLink(mylinks) //创建一个link force
+                .id(node => node.name) //nodes的id,标识节点
+                .distance(linkaa => linkaa.dis); //两个点的距离
+
+            let sim = d3.forceSimulation() //创建一个力模拟器
+                .nodes(mynodes) //指定nodes
+                .force('link', linkForce) //指定link
+                .force('charge', d3.forceManyBody()) //指定物理引擎，forceManyBody（）模拟物体之间的关系，涉及到力的处理
+                .force('center', d3.forceCenter(w / 2, h / 2)); //指定图的中心
+            // 开始模拟
+            sim.on('tick', () => { //当一个tick的时候，说明图形中的各种东西有变化
+                gd.clearRect(0, 0, w, h);
+                // 画点
+                mynodes.forEach(node => { //里面多出来的参数是模拟器自动加上去的
+                    gd.beginPath();
+                    gd.arc(node.x, node.y, 4, 0, Math.PI * 2, true);
+                    gd.fill();
+                    gd.font = '20px 宋体';
+                    gd.fillText(node.title, node.x, node.y)
+                });
+                // 划线
+                mylinks.forEach(link => {
+                        gd.beginPath();
+                        gd.moveTo(link.source.x, link.source.y);
+                        gd.lineTo(link.target.x, link.target.y);
+                        gd.stroke();
+                    })
+                    //想象中的运行过程，首先建好link force，把点和距离设置好，然后模拟器里面，把点和link给模拟器，告诉模拟器怎么处理力，告诉模拟器图中心点在哪里，然后模拟器开始处理，处理的时候通过tick一次，可以知道它处在处理过程中，有变化产生，并且相应的位置参数会放进节点和连接中去，通过监听tick来画点，既然tick一次就变化一次，那你就把tick时候的数据画出来
+            });
+
+        }
+    </script>
+</head>
+
+<body>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>

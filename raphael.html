@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>raphael---ie与chrome都能用</title>
+    <style></style>
+    <script src="./raphael.js"></script>
+    <script>
+        window.onload = function() {
+            var page = Raphael(0, 0, 800, 900);
+            var r1 = page.rect(10, 10, 200, 200);
+            r1.attr('fill', 'pink');
+            r1.attr('stroke', 'red').click(function() {
+                this.animate({
+                    width: 80,
+                    fill: 'green',
+                    strokewidth: 20
+                }, 2000, 'ease-in')
+            });
+
+            let path = page.path('M 250 200 L 200 300 400 300 Z').attr('fill', 'pink');
+            path.click(function() {
+                path.animate({
+                    path: 'M 250 200 L 250 400 250 400 Z'
+                }, 1000, 'ease-in')
+            })
+
+            let path2 = page.path('M 400 100 L 500 100 M 400 120  L 500 120 M 400 140 L 500 140').attr('stroke-width', '10').click(function() {
+                path2.animate({
+                    path: 'M 400 100 L 500 140 M 400 120  L 500 120 M 400 140 L 500 100'
+                }, 1000, 'bounce')
+            })
+        }
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

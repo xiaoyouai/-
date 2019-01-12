@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>创建svg图形</title>
+    <style></style>
+    <script>
+        window.onload = function() {
+            let obtn = document.getElementById('btn1');
+            let osvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            osvg.setAttribute('width', 800);
+            osvg.setAttribute('height', 600);
+            document.body.appendChild(osvg);
+
+            obtn.onclick = function() {
+                let ol = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                ol.setAttribute('x1', 100);
+                ol.setAttribute('y1', 100);
+                ol.setAttribute('x2', 400);
+                ol.setAttribute('y2', 300);
+                ol.style.stroke = 'red';
+                osvg.appendChild(ol);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <input type="button" value="按钮" id="btn1">
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>svg</title>
+    <style></style>
+    <script>
+        window.onload = function() {
+            let ol2 = document.getElementById('line2');
+            // ol2.onmouseover = function() {
+            //     this.style.stroke = 'blue';
+            // }
+            document.body.onmouseover = function(ev) { //事件委托写法
+                if (ev.srcElement == ol2) {
+                    ev.srcElement.style.stroke = 'blue';
+                }
+            }
+            document.body.onmouseout = function(ev) { //事件委托写法
+                    if (ev.srcElement == ol2) {
+                        ev.srcElement.style.stroke = 'orange';
+                    }
+                }
+                // ol2.addEventListener('mouseout', function() {
+                //     this.style.stroke = 'orange';
+                // }, false);
+
+            ol2.onclick = function() {
+                console.log(ol2.getAttribute('x2'));
+
+                ol2.setAttribute('x2', 700);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <svg width="800" height="600">
+        <line x1="100" y1="100"  x2="300" y2="300" stroke="black"  stroke-width="20"
+        onmousemove="this.style.stroke='green'" onmouseout="this.style.stroke='pink'"></line>
+        <line x1="300" y1="100"  x2="500" y2="300" style="stroke:yellow;stroke-width:10" id="line2"></line>
+
+        <rect x="100" y="400" width="100" rx="5" ry="5" height="100" style="stroke:yellow;stroke-width:10;fill:pink"></rect>
+        <circle cx="400" cy="400" r="50"></circle>
+        <ellipse cx="600" cy="400" rx="10" ry="20"></ellipse>
+    </svg>
+</body>
+
+</html>

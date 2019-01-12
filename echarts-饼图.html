@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>echarts-饼图</title>
+    <script src="./echarts.js"></script>
+    <style>
+        .box {
+            width: 800px;
+            height: 600px;
+            border: 1px solid black;
+            margin: 10px auto 0;
+        }
+    </style>
+    <script>
+        const $ = document.querySelectorAll.bind(document);
+
+        window.onload = function() {
+            let obox = $('.box')[0];
+            let option = {
+                title: {
+                    text: '北京人口', //主标题
+                    subtext: '2017年度', //副标题
+                    x: 'center'
+                },
+                legend: { //图例
+                    data: ['男', '女'],
+                    right: 0,
+                    top: '50%',
+                    orient: 'vertical' //朝向
+                },
+                series: [{ //系列
+                    name: '性别比例',
+                    type: 'pie',
+                    radius: '20%', //radius: ['70%','80%']表示内外半径
+                    center: ['30%', '50%'],
+                    data: [{
+                        name: '男',
+                        value: 4343,
+                    }, {
+                        name: '女',
+                        value: 3214
+                    }]
+                }, { //系列
+                    name: '年龄比例',
+                    type: 'pie',
+                    center: ['70%', '50%'],
+                    radius: '60%',
+                    data: [{
+                        name: '18以下',
+                        value: 43,
+                    }, {
+                        name: '18-20',
+                        value: 32
+                    }, {
+                        name: '20-38',
+                        value: 62
+                    }, {
+                        name: '38+',
+                        value: 45
+                    }]
+                }]
+
+            };
+            // 创建
+            let chart = echarts.init(obox);
+            // 设置参数
+            chart.setOption(option);
+        }
+    </script>
+</head>
+
+<body>
+    <div class="box"></div>
+</body>
+
+</html>

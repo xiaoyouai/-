@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>canvas图片</title>
+    <style>
+        body {
+            background-color: black;
+            text-align: center;
+        }
+        
+        #c1 {
+            background: #FFF;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            let oc = document.getElementById('c1');
+            let gd = oc.getContext('2d');
+
+            let i = 0,
+                x = 100;
+            let pause = false;
+            let frameCounter = 0; //帧计数器
+            let oImg = new Image();
+            oImg.src = 'fish1.png';
+            oImg.onload = function() {
+                function next() {
+                    if (!pause) {
+                        gd.clearRect(0, 0, oc.width, oc.height);
+                        if (frameCounter % 5 == 0) {
+                            i++;
+                            i = i == 4 ? 0 : i;
+                        }
+
+                        gd.drawImage(oImg,
+                            // sx sy sw sh
+                            0, i * 37, 55, 37,
+                            //dx,dy,dw,dh
+                            x, 100, 55, 37
+                        ); //可以随便选择图片的某一部分
+                        frameCounter++;
+                        x++;
+                    }
+                    requestAnimationFrame(next);
+                }
+                requestAnimationFrame(next);
+            }
+            document.onclick = function() {
+                pause = !pause;
+            }
+
+        }
+    </script>
+</head>
+
+<body>
+    <canvas id="c1" width="800" height="600"></canvas>
+</body>
+
+</html>
